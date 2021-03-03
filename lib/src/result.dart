@@ -1,4 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
+import 'dart:math';
+
 import 'failure.dart';
 import 'success.dart';
 
@@ -178,6 +180,21 @@ abstract class Result<S, F> {
     } else {
       final right = this as Failure<S, F>;
       return transform(right.value);
+    }
+  }
+
+  /// Applies the provided functions depending on the result and returns [T]
+  /// This function can be used to normalize the return type of the result
+  T fold<T>({
+    T Function(S) onSuccess,
+    T Function(F) onFailure,
+  }) {
+    if (isSuccess) {
+      final left = this as Success<S, F>;
+      return onSuccess(left.value);
+    } else {
+      final right = this as Failure<S, F>;
+      return onFailure(right.value);
     }
   }
 }
